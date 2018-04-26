@@ -1,1 +1,31 @@
 
+USE AdventureWorks2017;
+SELECT * FROM Sales.SalesPerson 
+SELECT * FROM Sales.SalesOrderDetail 
+SELECT * FROM Sales.SalesOrderHeader 
+
+
+SELECT BusinessEntityID, SalesQuota, SalesYTD, SalesLastYear 
+	FROM Sales.SalesPerson 
+	WHERE SalesQuota IS NOT NULL
+
+SELECT SalesOrderID, Sum(OrderQty*UnitPrice) OrderPrice 
+	FROM Sales.SalesOrderDetail 
+	GROUP BY SalesOrderID 
+	ORDER BY OrderPrice Desc
+
+SELECT SalesPersonID, sum(TotalDue) TotalDueSP 
+	FROM Sales.SalesOrderHeader 
+	WHERE SalesPersonID IS NOT NULL 
+	GROUP BY SalesPersonID 
+	ORDER BY TotalDueSP Desc
+
+SELECT soh.SalesPersonID, sp.SalesQuota, sp.SalesYTD, sp.SalesLastYear , sum(soh.TotalDue) TotalDueSP  , Sum(OrderQty*UnitPrice) OrderPrice 
+	FROM Sales.SalesOrderHeader soh 
+	INNER JOIN Sales.SalesPerson sp
+		ON soh.SalesPersonID = sp.BusinessEntityID
+	INNER JOIN Sales.SalesOrderDetail sod
+		ON sod.SalesOrderID = soh.SalesOrderID
+		GROUP BY soh.SalesPersonID, sp.SalesQuota, sp.SalesYTD, sp.SalesLastYear
+		ORDER BY SalesYTD
+		
